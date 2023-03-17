@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            background-image: linear-gradient(to left, red, blue);
+            align-items: center;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links .nav-link {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .nav-links {
+                display: flex;
+
+            }
+
+        .todo-container {
+            /* border: 1px solid black; */
+            margin-top: 100px;
+
+        }
+
+        .todo-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input {
+            padding: 10px;
+            width: 200px;
+            margin-top: 20px;
+        }
+
+        #submit-task {
+            padding: 10px;
+            margin-top: 20px;
+            background-color: aquamarine;
+        }
+
+        #submit-task:hover {
+            background-color: green;
+            width: 100px;
+            cursor: pointer;
+        }
+
+        #todo-list {
+            /* border: 1px solid black; */
+            display: flex;
+            flex-direction: column;
+            /* justify-content: center; */
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .todo-container header h2 {
+            display: flex;
+            justify-content: center;
+        }
+
+        .todo {
+            border: 1px solid red;
+
+            width: 400px;
+            margin-bottom: 20px;
+            /* display: flex; */
+            /* justify-content: center; */
+            /* align-items: center; */
+        }
+
+        .todo ul {
+            display: flex;
+            justify-content: space-around;
+            max-width: 400px;
+            align-items: center;
+        }
+    </style>
+
+
+    <title>Todo List</title>
+</head>
+
+<body>
+
+    <header class="nav">
+        <h1 class="nav-heading">Todo List</h1>
+
+        <ul class="nav-links" type="none">
+            <li class="nav-link">Home</li>
+            <li class="nav-link">About</li>
+            <li class="nav-link">Contact Us</li>
+        </ul>
+
+    </header>
+
+
+    <div class="todo-container">
+        <div class="todo-form">
+
+            <input id="task" placeholder="task" class="input" type="text">
+            <input id="date" class="input" type="datetime-local">
+
+            <button id="submit-task" onclick="addTask()" >
+                Submit
+            </button>
+
+        </div>
+
+        <header>
+            <h2>Todo List</h2>
+        </header>
+
+
+        <div id="todo-list">
+
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+    <script>
+
+        const pending = 'PENDING'
+        const completed = 'COMPLETED'
+        showTodos()
+        function addTask() {
+            let taskArray = []
+            if (localStorage.getItem('taskArray') !== null) {
+                taskArray = JSON.parse(localStorage.getItem('taskArray'))
+            }
+            const task = document.getElementById('task').value
+            const date = document.getElementById('date').value
+            taskArray = [...taskArray, {
+                task, date, status: pending
+            }]
+
+            localStorage.setItem('taskArray', JSON.stringify(taskArray))
+
+            showTodos();
+
+        }
+
+        function showTodos() {
+
+            const todoList = document.getElementById('todo-list')
+
+            todoList.innerHTML = ""
+
+            let taskArray = JSON.parse(localStorage.getItem('taskArray'))
+
+            for (let todo in taskArray) {
+                todoList.innerHTML += ` <div class="todo">
+                <ul type="none">
+                    <li>${+todo + 1}</li>
+                    <li>${taskArray[todo].task}</li>
+                    <li>${taskArray[todo].date}</li>
+                    <button id = ${'todo' + todo} onclick='makeComplete(${todo})' ondblclick = 'deleteTodo(${todo})'>${taskArray[todo].status}</button>
+                </ul>
+            </div>`
+            }
+        }
+
+        function makeComplete(id) {
+            let taskArray = []
+            taskArray = JSON.parse(localStorage.getItem('taskArray'))
+
+            taskArray[id].status = completed;
+
+            localStorage.setItem('taskArray', JSON.stringify(taskArray))
+            showTodos()
+        }
+
+        function deleteTodo(id){
+            let taskArray = []
+            taskArray = JSON.parse(localStorage.getItem('taskArray'))
+
+            taskArray = taskArray.filter((task,i)=>{
+                return i!==id
+            })
+
+            localStorage.setItem('taskArray', JSON.stringify(taskArray))
+            showTodos()
+        }
+    </script>
+
+</body>
+
+</html>
